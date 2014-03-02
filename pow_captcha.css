@@ -1,0 +1,12 @@
+.pow-captcha-progress-wrapper {
+  display: none;
+}
+
+.pow-captcha-ie-warning {
+    display: none;
+}
+
+.pow-captcha-attached fieldset.captcha > legend,
+.pow-captcha-attached fieldset.captcha > .fieldset-wrapper > .fieldset-description {
+    display: none;
+}
