@@ -171,7 +171,7 @@ function pow_captcha_add_js() {
   drupal_add_js(drupal_get_path('module', 'pow_captcha') .'/pow_captcha.js');
   drupal_add_js(array(
     'pow_captcha' => array(
-      'key' => variable_get('pow_captcha_key'),
+      'key' => variable_get('pow_captcha_public_key'),
       'complexity' => variable_get('pow_captcha_complexity', 0.00001),
       'worker_url' => pow_captcha_get_worker_url(),
       'server_url' => POW_CAPTCHA_URL,

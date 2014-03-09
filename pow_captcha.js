@@ -1,12 +1,11 @@
+/* global Drupal, POW, jQuery */
 (function($) {
   var serverUrl;
   var working = false;
   var badBrowser = false;
 
   if (navigator.appName.indexOf("Internet Explorer") != -1) {
-      badBrowser = true;
-
-      var badBrowser = (
+      badBrowser = (
           navigator.appVersion.indexOf("MSIE 1") == -1  //v10, 11, 12, etc. is fine too
       );
   }
@@ -14,7 +13,7 @@
   Drupal.behaviors.pow_captcha = {
     attach: function(c) {
       serverUrl = Drupal.settings.pow_captcha.server_url;
-      $("form input[name='pow_captcha']").once('pow_captcha', attach_pow_captcha);
+      $("form input[name='pow_captcha']", c).once('pow_captcha', attach_pow_captcha);
     }
   };
 
@@ -39,12 +38,12 @@
     }
 
     // Attach work call whenever user interact with form
-    $("input", form).one('focus', function() { work(form) });
-    $('input[name="pow_captcha_enable_buttons"]', form).one('click', function() { work(form) });
+    $("input", form).one('focus', function() { work(form); });
+    $('input[name="pow_captcha_enable_buttons"]', form).one('click', function() { work(form); });
   }
 
   function work(form) {
-    if (working) return;
+    if (working) { return; }
     working = true;
 
     // Hide checkbox and show progress bar
@@ -54,7 +53,6 @@
     $(pb.element).appendTo( form.find('.pow-captcha-progress') );
     pb.setProgress("0", Drupal.t("Generating Proof-of-Work..."));
 
-    var input = $(this);
     var form_build_id = $("input[name='form_build_id']", form).val();
 
     var pow = new POW(
