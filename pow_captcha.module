@@ -1,5 +1,5 @@
 <?php
-define('POW_CAPTCHA_URL', 'http://bitcaptcha:3000/');
+define('POW_CAPTCHA_URL', 'http://hashcash.io/');
 
 /**
  * Implementation of hook_menu().
