@@ -105,8 +105,8 @@ function pow_captcha_validate_work($solution, $response, $element, $form_state) 
 }
 
 function pow_captcha_add_js() {
-  drupal_add_js(drupal_get_path('module', 'pow_captcha') .'/jquery.hashcash.io/jquery.hashcash.io.min.js');
-  drupal_add_js(drupal_get_path('module', 'pow_captcha') .'/pow_captcha.js');
+  drupal_add_js(drupal_get_path('module', 'pow_captcha') .'/jquery.hashcash.io/jquery.hashcash.io.min.js', array('scope' => 'footer'));
+  drupal_add_js(drupal_get_path('module', 'pow_captcha') .'/pow_captcha.js', array('scope' => 'footer'));
   drupal_add_js(array(
     'pow_captcha' => array(
       'key' => variable_get('pow_captcha_public_key'),
