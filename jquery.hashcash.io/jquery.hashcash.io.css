@@ -12,7 +12,7 @@
 .hashcash-onoffswitch-checkbox {
   display: none;
 }
-.hashcash-onoffswitch-label {
+.hashcash-onoffswitch .hashcash-onoffswitch-label {
   display: block;
   overflow: hidden;
   cursor: pointer;
@@ -21,7 +21,7 @@
   margin: 0;
   padding: 0;
 }
-.hashcash-onoffswitch-inner {
+.hashcash-onoffswitch .hashcash-onoffswitch-inner {
   display: block;
   width: 200%;
   margin-left: -100%;
