@@ -1,6 +1,6 @@
 /* global HashcashIO, jQuery */
 (function($) {
-    var defaultHashcashUrl = 'http://hashcash.lc:3000' || window.HashcashIOUrl;
+    var defaultHashcashUrl = 'https://hashcash.io' || window.HashcashIOUrl;
     var hashcash, hashcashReady;
 
     // If HashcashIO API is not loaded yet, load it asynchroniously
