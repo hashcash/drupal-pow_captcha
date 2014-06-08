@@ -3,7 +3,7 @@ description = "Provides an Proof of Work based CAPTCHA."
 package = "Spam control"
 dependencies[] = captcha
 core = 7.x
-configure = admin/config/people/captcha/image_captcha
+configure = admin/config/people/captcha/pow_captcha
 
 stylesheets[all][] = pow_captcha.css
 

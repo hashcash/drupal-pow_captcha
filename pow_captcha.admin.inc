@@ -15,7 +15,7 @@ function pow_captcha_settings_form() {
     '#type'          => 'textfield',
     '#title'         => t('Hashcash.io Public Key'),
     '#default_value' => variable_get('pow_captcha_public_key'),
-    '#description'   => t('Public API Key - obtain it at http://hashcash.io/dashboard/keys'),
+    '#description'   => t('Public API Key - obtain it at https://hashcash.io/'),
     '#required'      => TRUE,
   );
 
@@ -23,7 +23,7 @@ function pow_captcha_settings_form() {
     '#type'          => 'textfield',
     '#title'         => t('Secret Key'),
     '#default_value' => variable_get('pow_captcha_key'),
-    '#description'   => t('Keep this secret! Obtain it at http://hashcash.io/dashboard/keys'),
+    '#description'   => t('Keep this secret! Obtain it at https://hashcash.io/'),
     '#required'      => TRUE,
   );
 

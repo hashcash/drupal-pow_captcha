@@ -1,5 +1,5 @@
 <?php
-define('POW_CAPTCHA_URL', 'http://hashcash.io/');
+define('POW_CAPTCHA_URL', 'https://hashcash.io/');
 
 /**
  * Implementation of hook_menu().
@@ -41,36 +41,27 @@ function pow_captcha_captcha($op, $captcha_type='') {
         return;
       }
 
-      pow_captcha_add_css();
       pow_captcha_add_js();
 
       $captcha = array();
       $captcha['solution'] = 'not used';
+      $captcha['captcha_validate'] = 'pow_captcha_validate_work';
       $captcha['form']['pow_captcha'] = array(
-        '#type' => 'hidden',
-        '#default_value' => 'active',
+          '#type' => 'hidden',
+          '#default_value' => 'active',
+      );
+      $captcha['form']['warning'] = array(
+          '#type' => 'markup',
+          '#markup' => '
+              <div class="pow-captcha-ie-warning">
+              <p>' . t("To submit this form you need to use Internet Explorer v10+ or recent version of Chrome, Firefox or Safari.") . '</p>
+              </div>
+          ',
       );
       $captcha['form']['captcha_response'] = array(
-        '#type' => 'hidden',
-        '#default_value' => 'active',
+          '#type' => 'hidden',
+          '#default_value' => 'active',
       );
-      $captcha['form']['pow_captcha_enable_buttons'] = array(
-        '#type' => 'checkbox',
-        '#title' => t('Unlock submit buttons.'),
-      );
-      $captcha['form']['progress'] = array(
-        '#type' => 'markup',
-        '#markup' => '
-            <div class="pow-captcha-ie-warning">
-                <p>' . t("To submit this form you need to use Internet Explorer v10+ or recent version of Chrome, Firefox or Safari.") . '</p>
-            </div>
-            <div class="pow-captcha-progress-wrapper">
-              <div class="pow-captcha-progress"></div>
-              <div class="description">' . t('To submit this form please wait until Proof-of-Work complete.') . '</div>
-            </div>
-        ',
-      );
-      $captcha['captcha_validate'] = 'pow_captcha_validate_work';
 
       return $captcha;
     }
@@ -78,66 +69,14 @@ function pow_captcha_captcha($op, $captcha_type='') {
   }
 }
 
-/**
- * Download/Synchronize/Cache worker code file locally.
- *
- * @param $sync_cached_file
- *   Synchronize worker code and update if remote file have changed.
- * @return mixed
- *   The path to the local javascript file on success, boolean FALSE on failure.
- */
-function pow_captcha_get_worker_url($sync_cached_file = FALSE) {
-  $path = 'public://pow_captcha';
-  $location = POW_CAPTCHA_URL . 'js/libs/pow/pow.worker.min.js';
-  $file_destination = $path . '/' . basename($location);
-
-  if (!file_exists($file_destination) || $sync_cached_file) {
-    // Download the latest worker code.
-    $result = drupal_http_request($location);
-
-    if ($result->code == 200) {
-      if (file_exists($file_destination)) {
-        // Synchronize worker code and and replace local file if outdated.
-        $data_hash_local = drupal_hash_base64(file_get_contents($file_destination));
-        $data_hash_remote = drupal_hash_base64($result->data);
-        // Check that the files directory is writable.
-        if ($data_hash_local != $data_hash_remote && file_prepare_directory($path)) {
-          // Save updated tracking code file to disk.
-          file_unmanaged_save_data($result->data, $file_destination, FILE_EXISTS_REPLACE);
-          watchdog('pow_captcha', 'Locally cached worker code file has been updated.', array(), WATCHDOG_INFO);
-
-          // Change query-strings on css/js files to enforce reload for all users.
-          _drupal_flush_css_js();
-        }
-      }
-      else {
-        // Check that the files directory is writable.
-        if (file_prepare_directory($path, FILE_CREATE_DIRECTORY)) {
-          // There is no need to flush JS here as core refreshes JS caches
-          // automatically, if new files are added.
-          file_unmanaged_save_data($result->data, $file_destination, FILE_EXISTS_REPLACE);
-          watchdog('pow_captcha', 'Locally cached worker code file has been saved.', array(), WATCHDOG_INFO);
-
-          // Return the local JS file path.
-          return file_create_url($file_destination);
-        }
-      }
-    }
-  }
-  else {
-    // Return the local JS file path.
-    return file_create_url($file_destination);
-  }
-}
-
 function pow_captcha_validate_work($solution, $response, $element, $form_state) {
   $key = variable_get('pow_captcha_key');
-  $bid = $form_state['input']['form_build_id'];
+  $id = $form_state['input']['form_build_id'];
 
-  $url = POW_CAPTCHA_URL . 'api/work';
+  $url = POW_CAPTCHA_URL . 'api/checkwork/' . $id;
   $query = array(
       'apikey' => $key,
-      'conditions' => '{"bid": "' . $bid . '"}',
+      'returnVerified' => 1
   );
 
   $result = drupal_http_request( url($url, array('query' => $query)) );
@@ -146,13 +85,13 @@ function pow_captcha_validate_work($solution, $response, $element, $form_state) 
     $r = drupal_json_decode( $result->data );
 
     try {
-      $totalDone = $r[0]['totalDone'];
+      $totalDone = $r['totalDone'];
     }
     catch (Exception $e) {
         $totalDone = 0;
     }
 
-    if ($totalDone < variable_get('pow_captcha_complexity', 0.0001)) {
+    if ($totalDone < variable_get('pow_captcha_complexity', 0.01)) {
       form_set_error('captcha_response', t('You did not wait enough. Please be more patient.'));
       return false;
     }
@@ -166,18 +105,12 @@ function pow_captcha_validate_work($solution, $response, $element, $form_state) 
 }
 
 function pow_captcha_add_js() {
-  drupal_add_js('misc/progress.js');
-  drupal_add_js(POW_CAPTCHA_URL . "js/libs/pow/pow.bundle.min.js", "external");
+  drupal_add_js(drupal_get_path('module', 'pow_captcha') .'/jquery.hashcash.io/jquery.hashcash.io.min.js');
   drupal_add_js(drupal_get_path('module', 'pow_captcha') .'/pow_captcha.js');
   drupal_add_js(array(
     'pow_captcha' => array(
       'key' => variable_get('pow_captcha_public_key'),
-      'complexity' => variable_get('pow_captcha_complexity', 0.00001),
-      'worker_url' => pow_captcha_get_worker_url(),
-      'server_url' => POW_CAPTCHA_URL,
+      'complexity' => variable_get('pow_captcha_complexity', 0.01),
     )
   ), 'setting');
-}
-
-function pow_captcha_add_css() {
 }
