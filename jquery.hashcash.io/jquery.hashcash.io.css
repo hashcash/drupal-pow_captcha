@@ -18,6 +18,8 @@
   cursor: pointer;
   border: 2px solid #FFFFFF;
   border-radius: 50px;
+  margin: 0;
+  padding: 0;
 }
 .hashcash-onoffswitch-inner {
   display: block;
