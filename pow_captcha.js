@@ -30,7 +30,15 @@
         autoId: false,
         hashcashInputName: "form_build_id",
         key: Drupal.settings.pow_captcha.key,
-        complexity: Drupal.settings.pow_captcha.complexity
+        complexity: Drupal.settings.pow_captcha.complexity,
+        lang: {
+            screenreader_notice: Drupal.t('Click this to unlock submit button'),
+            screenreader_notice_done: Drupal.t('Form unlocked. Please submit this form.'),
+            screenreader_computing: Drupal.t('Please wait while computing.'),
+            screenreader_computed: Drupal.t('Form is ready. Please submit this form.'),
+            screenreader_done: Drupal.t('__done__% done.'),
+            popup_info: Drupal.t('Please unlock it first.')
+        }
     });
   }
 
