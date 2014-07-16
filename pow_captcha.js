@@ -15,7 +15,7 @@
   };
 
   function attach_pow_captcha() {
-    var $form = $(this).parents('form').first();
+    var $form = $(this).parents('form').eq(0);
 
     if (badBrowser) {
         $(".pow-captcha-ie-warning", $form).show();
