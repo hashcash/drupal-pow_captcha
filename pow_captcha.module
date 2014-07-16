@@ -97,7 +97,7 @@ function pow_captcha_validate_work($solution, $response, $element, $form_state) 
     }
   }
   else {
-    form_set_error('captcha_response', t('Problem with Proof-of-Work. Please contact site administrator if this problem persist.'));
+    form_set_error('captcha_response', t('Problem with Proof-of-Work. Make sure you have Javascript enabled. Please contact site administrator if this problem persist.'));
     return false;
   }
 
