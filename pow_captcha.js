@@ -8,14 +8,12 @@
       );
   }
 
-  Drupal.behaviors.pow_captcha = {
-    attach: function(c) {
-      $("form input[name='pow_captcha']", c).once('pow_captcha', attach_pow_captcha);
-    }
+  Drupal.behaviors.pow_captcha = function(c) {
+    $("form input[name='pow_captcha']:not(.pow-captcha-processed)", c).addClass('pow-captcha-processed').each(attach_pow_captcha);
   };
 
   function attach_pow_captcha() {
-    var $form = $(this).parents('form').first();
+    var $form = $(this).parents('form').eq(0);
 
     if (badBrowser) {
         $(".pow-captcha-ie-warning", $form).show();

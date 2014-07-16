@@ -9,9 +9,7 @@
 }
 
 .pow-captcha-attached fieldset.captcha {
-    border: none;
-    margin: 0;
-    padding: 0;
+    display: none;
 }
 
 .pow-captcha-attached fieldset.captcha > .fieldset-wrapper {
