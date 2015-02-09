@@ -24,7 +24,7 @@
 
     $form.addClass('pow-captcha-attached');
 
-    var $button = $form.find("input[type=submit]").eq(0);
+    var $button = $form.find(".form-actions input[type=submit], .form-actions button.form-submit").eq(0);
 
     $button.hashcash({
         autoId: false,
